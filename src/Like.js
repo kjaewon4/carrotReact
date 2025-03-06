@@ -23,14 +23,14 @@ export default function Like({ items, setItems }) {
     const toggleLike = (id) => {
         setItems((prevItem) =>
             prevItem.map((item) =>
-                item.id === id ? { ...item, like: !item.like } : item));
+                item.id === id ? { ...item, liked: !item.liked } : item));
     };
 
     return (
         <>
         <div className='Content'>
           {items
-          .filter((item) => item.like)
+          .filter((item) => item.liked)
           .map((item) => (
             <div
               className='contentBox'
@@ -41,7 +41,7 @@ export default function Like({ items, setItems }) {
               </h3>
               <h5 className='item-price'>
                 {item.price}원
-                <span onClick={() => toggleLike(item.id)}>{item.like ? <FaStar /> : <CiStar />}</span>
+                <span onClick={() => toggleLike(item.id)}>{item.liked ? <FaStar className="liked-icom"/> : <CiStar />}</span>
               </h5>
             </div>
           ))}

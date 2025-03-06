@@ -81,6 +81,11 @@
     font-size: 18px;
 }
 
+.liked-icom{
+    font-size: 30px; 
+    cursor: pointer;
+}
+
 .delete-btn {
     background-color: #D9A679;
     border: 0px;

@@ -69,7 +69,7 @@ const Styles = {
     },
     botton: {
         border: '0',
-        float:'right',
+        float: 'right',
         borderRadius: '10px',
         boxShadow: '3px 3px 5px lightgray',
         width: '100px',
@@ -83,27 +83,6 @@ const Popup = ({ mode, data, closePopup, onCreate, onUpdate }) => {
     const [previewImg, setPreviewImg] = useState(NoImg);
     if (!mode) return null;
 
-    // const handleCreate = (img, title, price, description) => {
-    //     alert("oo");
-    //     const formData = new FormData();
-    //     formData.append('img', img); // 이미지 파일
-    //     formData.append('title', title); // 상품명
-    //     formData.append('price', price); // 가격
-    //     formData.append('description', description); // 상세설명
-    
-    //     axios.post('/addItem', formData, {
-    //         headers: {
-    //             'Content-Type': 'multipart/form-data'
-    //         }
-    //     })
-    //     .then((response) => {
-    //         console.log('상품 등록 성공', response.data);
-    //     })
-    //     .catch((error) => {
-    //         console.error('상품 등록 실패', error);
-    //     });
-    // };
-
     return (
         <div style={Styles.wrapper} onClick={closePopup}>
             <div style={Styles.popupContent} onClick={(e) => e.stopPropagation()}>
@@ -112,6 +91,10 @@ const Popup = ({ mode, data, closePopup, onCreate, onUpdate }) => {
                 }}>
                     <BiX />
                 </button>
+                {mode === "ITEM" && (
+                    <Item img={data.img} price={data.price} title={data.title} body={data.body}/>
+                )}
+
 
                 {mode === "CREATE" && (
                     <div>
@@ -143,14 +126,14 @@ const Popup = ({ mode, data, closePopup, onCreate, onUpdate }) => {
                         }}>
                             <div style={Styles.container}>
                                 <div style={Styles.imgDiv}>
-                                    <img 
-                                        src={previewImg !== NoImg ? previewImg : NoImg} 
-                                        alt="미리보기" 
+                                    <img
+                                        src={previewImg !== NoImg ? previewImg : NoImg}
+                                        alt="미리보기"
                                         style={{ width: "300px", height: "300px", objectFit: "contain" }}
                                     />
-                                    <input 
-                                        type='file' 
-                                        name='img' 
+                                    <input
+                                        type='file'
+                                        name='img'
                                         onChange={(e) => {
                                             const file = e.target.files[0];
                                             if (file) {
@@ -160,24 +143,103 @@ const Popup = ({ mode, data, closePopup, onCreate, onUpdate }) => {
                                             } else {
                                                 setPreviewImg(NoImg);
                                             }
-                                        }} 
+                                        }}
                                     />
                                 </div>
                                 <div>
                                     <p>상품명</p>
-                                    <input type='text' name="title" style={Styles.inputBox} placeholder='상품명'/>
+                                    <input type='text' name="title" style={Styles.inputBox} placeholder='상품명' />
                                     <p>가격</p>
-                                    <input type='text' name="price" style={Styles.inputBox} placeholder='숫자만 입력'/>
+                                    <input type='text' name="price" style={Styles.inputBox} placeholder='숫자만 입력' />
                                 </div>
                             </div>
                             <p>상세설명</p>
                             <textarea name="description" style={Styles.textAreaBox} />
-                            <input type='submit' value="글쓰기" style={Styles.botton}/>
+                            <input type='submit' value="글쓰기" style={Styles.botton} />
                         </form>
                     </div>
                 )}
+
+                {mode === "UPDATE" && (
+                    <div>
+                        <h3>상품 수정</h3>
+                        <form onSubmit={(evt) => {
+                            evt.preventDefault();
+                            const title = evt.target.title.value;
+                            const price = evt.target.price.value;
+                            const description = evt.target.description.value;
+                            const file = evt.target.img.files[0];
+                            const defaultImg = data?.img || NoImg;
+
+                            const parsedPrice = parseInt(price.replace(/,/g, ""), 10);
+                            if (isNaN(parsedPrice)) {
+                                alert("잘못 입력하셨습니다");
+                                return;
+                            }
+
+                            if (file) {
+                                const reader = new FileReader();
+                                reader.readAsDataURL(file);
+                                reader.onload = function () {
+                                    onUpdate(data.id, reader.result, title, price, description);
+                                };
+                            } else {
+                                onUpdate(data.id, defaultImg, title, price, description);
+                            }
+                        }}>
+                            <div style={Styles.container}>
+                                <div>
+                                    <img
+                                        src={previewImg !== NoImg ? previewImg : data?.img}
+                                        alt="미리보기"
+                                        style={{ width: "300px", height: "300px", objectFit: "contain" }}
+                                    />
+                                    <input
+                                        type='file'
+                                        name='img'
+                                        onChange={(e) => {
+                                            const file = e.target.files[0];
+                                            if (file) {
+                                                const reader = new FileReader();
+                                                reader.readAsDataURL(file);
+                                                reader.onload = () => setPreviewImg(reader.result);
+                                            } else {
+                                                setPreviewImg(NoImg);
+                                            }
+                                        }}
+                                    />
+                                </div>
+                                <div>
+                                    <p>상품명</p>
+                                    <input
+                                        type='text'
+                                        name="title"
+                                        style={Styles.inputBox}
+                                        defaultValue={data?.title}
+                                    />
+                                    <p>가격</p>
+                                    <input
+                                        type='text'
+                                        name="price"
+                                        style={Styles.inputBox}
+                                        defaultValue={data?.price}
+                                    />
+                                </div>
+                            </div>
+                            <p>상세설명</p>
+                            <textarea
+                                name="body"
+                                style={Styles.textAreaBox}
+                                defaultValue={data?.description}
+                            />
+                            <input type='submit' value="수정하기" style={Styles.botton} />
+                        </form>
+                    </div>
+                )}
+
             </div>
         </div>
+     
     );
 };
 
@@ -198,7 +260,7 @@ const Popup = ({ mode, data, closePopup, onCreate, onUpdate }) => {
 //         formData.append('title', title); // 상품명
 //         formData.append('price', price); // 가격
 //         formData.append('description', description); // 상세설명
-    
+
 //         axios.post('/addItem', formData, {
 //             headers: {
 //                 'Content-Type': 'multipart/form-data'

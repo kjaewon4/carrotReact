@@ -29,15 +29,15 @@ export default function Content({ items, setItems, onDelete }) {
   const toggleLike = (id) => {
     setItems((prevItems) =>
       prevItems.map((item) =>
-        item.id === id ? { ...item, like: !item.like } : item
+        item.id === id ? { ...item, liked: !item.liked } : item
       )
     );
   };
 
-  const handleUpdate = (id, img, title, price, body) => {
+  const handleUpdate = (id, img, title, price, description) => {
     setItems((prevItems) =>
       prevItems.map((item) =>
-        item.id === id ? { ...item, img, title, price, body } : item
+        item.id === id ? { ...item, img, title, price, description } : item
       )
     );
     closePopup();
@@ -56,7 +56,7 @@ export default function Content({ items, setItems, onDelete }) {
                 onClick={() => toggleLike(item.id)} 
                 style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}
               >
-                {item.like ? <FaStar size="30" style={{cursor: 'pointer'}}/> : <CiStar size="30" style={{cursor: 'pointer'}}/>}
+                {item.liked ? <FaStar className="liked-icom"/> : <CiStar className="liked-icom"/>}
             </span>
             </h5>
             <div style={{ float: 'right', marginRight: '6px', paddingLeft: '6px'}}>
