@@ -48,7 +48,7 @@ export default function Content({ items, setItems, onDelete }) {
       <div className='Content'>
         {items.map((item) => (
           <div className='contentBox' key={item.id}>
-            <img src={item.img} alt={item.title} onClick={() => openPopup(item)} />
+            <img src={item.img} alt={item.id} onClick={() => openPopup(item)} />
             <h3 className='item-title' title={item.title} onClick={() => openPopup(item)}>{item.title}</h3>
             <h5 className='item-price'>
               {item.price}원
