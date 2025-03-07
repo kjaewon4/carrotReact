@@ -3,6 +3,8 @@ package com.springboot.carrotmarket.controller;
 import com.springboot.carrotmarket.entity.Item;
 import com.springboot.carrotmarket.repository.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,44 +44,6 @@ public class ItemController {
             e.printStackTrace();
             return "상품 등록 실패";
         }
-
-//        System.out.println(title);
-//        System.out.println(price);
-//
-//        try {
-//            // DB 저장 로직
-//            Item item = new Item();
-//            item.setTitle(title);  // 상품명
-//            item.setPrice(price);  // 가격
-//            item.setDescription(description);  // 상세 설명
-//            item.setImg(img);
-//
-//            // 파일 처리 (img)
-////            if (!img.isEmpty()) {
-////                String filePath = saveFile(img);
-////                item.setImg(filePath);  // 파일 경로 저장
-////            }
-//
-//            itemRepository.save(item);  // DB에 저장
-//
-//            return "상품 등록 성공";
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return "상품 등록 실패";
-//        }
-    }
-    // 파일을 저장하는 메서드
-    private String saveFile(MultipartFile img) throws Exception {
-        String fileName = img.getOriginalFilename();
-        String filePath = "C:/uploads/" + fileName;  // 파일 저장 경로
-
-        File uploadDir = new File("C:/uploads/");
-        if (!uploadDir.exists()) {
-            uploadDir.mkdirs();  // 디렉토리가 없으면 생성
-        }
-
-        img.transferTo(new File(filePath));  // 파일 저장
-        return filePath;  // 파일 경로 반환
     }
 
     @DeleteMapping("/deleteItem/{id}")
@@ -88,6 +52,25 @@ public class ItemController {
 
         itemRepository.deleteById(id);
 
+    }
+
+    @PutMapping("/updateItem/{id}")
+    public ResponseEntity<Item> updateItem(@PathVariable Long id, @RequestBody Item updatedItem) {
+        try {
+            Item item = itemRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다. ID: " + id));
+
+            item.setImg(updatedItem.getImg());
+            item.setTitle(updatedItem.getTitle());
+            item.setPrice(updatedItem.getPrice());
+            item.setDescription(updatedItem.getDescription());
+            Item savedItem = itemRepository.save(item);
+
+            return ResponseEntity.ok(savedItem);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
 }
