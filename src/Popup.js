@@ -92,7 +92,7 @@ const Popup = ({ mode, data, closePopup, onCreate, onUpdate }) => {
                     <BiX />
                 </button>
                 {mode === "ITEM" && (
-                    <Item img={data.img} price={data.price} title={data.title} body={data.body}/>
+                    <Item img={data.img} price={data.price} title={data.title} body={data.description} />
                 )}
 
 
@@ -160,7 +160,7 @@ const Popup = ({ mode, data, closePopup, onCreate, onUpdate }) => {
                     </div>
                 )}
 
-                {mode === "UPDATE" && (
+                {data && mode === "UPDATE" && (
                     <div>
                         <h3>상품 수정</h3>
                         <form onSubmit={(evt) => {
@@ -181,6 +181,8 @@ const Popup = ({ mode, data, closePopup, onCreate, onUpdate }) => {
                                 const reader = new FileReader();
                                 reader.readAsDataURL(file);
                                 reader.onload = function () {
+                                    console.log("onUpdate 호출됨"); // 디버깅
+
                                     onUpdate(data.id, reader.result, title, price, description);
                                 };
                             } else {
@@ -228,7 +230,7 @@ const Popup = ({ mode, data, closePopup, onCreate, onUpdate }) => {
                             </div>
                             <p>상세설명</p>
                             <textarea
-                                name="body"
+                                name="description"
                                 style={Styles.textAreaBox}
                                 defaultValue={data?.description}
                             />
@@ -239,7 +241,7 @@ const Popup = ({ mode, data, closePopup, onCreate, onUpdate }) => {
 
             </div>
         </div>
-     
+
     );
 };
 
