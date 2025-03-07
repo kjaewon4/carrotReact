@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 
 export default function Nav({ mode, setMode }) {
   const [activeLink, setActiveLink] = useState(mode); // 활성화된 링크 상태 관리
@@ -15,11 +15,6 @@ export default function Nav({ mode, setMode }) {
         className={activeLink === 'LIST' ? 'active' : ''}
         onClick={(event) => handleClick(event, 'LIST')}>전체상품
       </a>
-      {/* <span> | </span>
-       <a href="/create"
-        className={activeLink === 'COMMU' ? 'active' : ''}
-        onClick={(event) => handleClick(event, 'COMMU')}>커뮤니티
-      </a> */}
       <span> | </span>
       <a href="/create"
         className={activeLink === 'CREATE' ? 'active' : ''}

@@ -1,3 +1,6 @@
+* {
+    box-sizing: border-box;
+}
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -21,6 +24,7 @@
 .title img {
     width: 50px;
 
+
 }
 
 .Nav {
@@ -31,12 +35,12 @@
     margin-bottom: 20px;
 }
 
-.Nav a {
+a {
     text-decoration: none;
     color: black;
 }
 
-.Nav a.active {
+a.active {
     color: rgb(255, 115, 0);
     font-weight: bold;
 }
@@ -113,3 +117,44 @@
 ::placeholder {
     font-size: 14px;
 }
+
+/* 로그인 회원가입 */
+.auth-container {
+    width: 300px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+  
+  .auth-container form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .auth-container label {
+    margin-bottom: 5px;
+  }
+  
+  .auth-container input {
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 3px;
+    border: 1px solid #ddd;
+    width: 100%;
+  }
+  
+  .auth-container button {
+    padding: 10px;
+    background-color: #D9A679;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  
+  .auth-container button:hover {
+    background-color: #45a049;
+  }
+  

@@ -9,14 +9,29 @@ import logo from './logo.png';
 import banner from './banner.png';
 import axios from "axios";
 
+
 export default function Main() {
   const [items, setItems] = useState([]);
   const navigate = useNavigate();  // URL 변경을 위한 navigate
+  const [isLoggedIn, setIsLoggedIn] = useState(false);  // 로그인 상태 관리
+  
+  useEffect(() => {
+    axios.get("http://localhost:8080/checkSession", { withCredentials: true })
+      .then((res) => {
+        if (res.data.includes("Logged in as")) {
+          setIsLoggedIn(true);  // 로그인 상태일 때
+        }
+      })
+      .catch((error) => {
+        setIsLoggedIn(false);  // 로그인 상태가 아닐 때
+        console.error("로그인 확인 실패:", error);
+      });
+  }, []);
 
   useEffect(() => {
     axios.get("http://localhost:8080/")
       .then((res) => {
-        console.log("items : "+ res.data); 
+        console.log("items : " + res.data);
         setItems(res.data)
       })
       .catch((error) => console.error("Error:", error));
@@ -47,10 +62,10 @@ export default function Main() {
       // 삭제 후 UI에서 항목 제거
       setItems((prevItems) => prevItems.filter(item => item.id !== id));
 
-     // nextId를 업데이트: 남은 아이템 중 가장 큰 id + 1
-     const maxId = items.reduce((max, item) => (item.id > max ? item.id : max), 0);
-     setNextId(maxId + 1); // 가장 큰 id 값 + 1을 설정
-    }catch (error) {
+      // nextId를 업데이트: 남은 아이템 중 가장 큰 id + 1
+      const maxId = items.reduce((max, item) => (item.id > max ? item.id : max), 0);
+      setNextId(maxId + 1); // 가장 큰 id 값 + 1을 설정
+    } catch (error) {
       console.error("삭제 실패:", error);
     }
 
@@ -89,7 +104,20 @@ export default function Main() {
       })
       .catch((error) => {
         console.error('상품 등록 실패', error);
-        navigate('/main'); 
+        navigate('/main');
+      });
+  };
+
+  const handleLogout = () => {
+    // 로그아웃 API 호출
+    axios.post('http://localhost:8080/logout', {}, { withCredentials: true })
+      .then((response) => {
+        console.log(response.data);  // 로그아웃 성공 메시지
+        setIsLoggedIn(false);  // 로그아웃 상태로 변경
+        navigate('/login');  // 로그인 페이지로 리다이렉트
+      })
+      .catch((error) => {
+        console.error('Logout failed', error);
       });
   };
 
@@ -115,13 +143,30 @@ export default function Main() {
     );
   } else if (mode === 'LIST') {
     content = <Content items={items} setItems={setItems} onDelete={onDelete} />;
-  }
+  } 
 
   return (
     <div className='container'>
       <div className='Main'>
-        <div className='titleBox'>
+        <div className='titleBox' style={{display:'flex', flexDirection:"row", justifyContent:'space-between'}}>
           <h2 className='title'><img src={logo} alt="로고" />TEMTEMU</h2>
+
+          <div style={{display: 'flex', alignItems: "center", justifyContent : "center", gap : "10px"}}>
+          {!isLoggedIn ? (
+              <>
+                <a href="/login" className='login'>로그인</a>
+                <span> | </span>
+                <a href="/sign" className="sign">회원가입</a>
+              </>
+            ) : (
+              <>
+                <p className="logout" onClick={handleLogout}>로그아웃</p> {/* 로그아웃 버튼 */}
+              </>
+            )}
+
+          </div>
+         
+
         </div>
         <div className='container2'>
           <img src={banner} alt="배너" className='banner' />
